@@ -37,7 +37,7 @@ RUN cd /tmp \
     && make install \
     && make samples \
     && make config \
-    && cd /
+    && cd / \
     && rm -rf /tmp/asterisk-${ASTERISK_VERSION}
 
 CMD asterisk -fvvv
