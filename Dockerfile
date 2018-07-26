@@ -21,7 +21,7 @@ RUN apt-get update \
         curl \
         msmtp \
         subversion \
-        xmlstarlet \
+        xmlstarlet
 
 # Asterisk expects /usr/sbin/sendmail
 RUN ln -s /usr/bin/msmtp /usr/sbin/sendmail
