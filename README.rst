@@ -1,5 +1,5 @@
 ***********************
-Hibou - Asterisk Docker
+Asterisk Docker
 ***********************
 
 This Dockerfile provides an easy way to get Asterisk up and running on Docker based infrastructure.
@@ -23,7 +23,7 @@ docker-compose.yml::
     version: '2'
     services:
       asterisk:
-        image: hibou/asterisk:14
+        image: nafg/asterisk
         ports:
          - "192.168.100.10:5060:5060/udp"
          - "192.168.100.10:5060:5060/tcp"
