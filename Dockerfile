@@ -1,6 +1,8 @@
-FROM debian:jessie
+FROM debian:jessie-slim
 
 ENV DEBIAN_FRONTEND noninteractive
+
+ENV ASTERISK_VERSION 15.5.0
 
 RUN apt-get update \
     && apt-get install -y \
@@ -15,20 +17,27 @@ RUN apt-get update \
         libjansson-dev \
         libssl-dev \
         libcurl4-openssl-dev \
+        libopus-dev \
         curl \
-        msmtp
+        msmtp \
+        subversion \
+        xmlstarlet \
 
 # Asterisk expects /usr/sbin/sendmail
 RUN ln -s /usr/bin/msmtp /usr/sbin/sendmail
 
-ENV ASTERISK_VERSION 15.5.0
-RUN cd /tmp && curl -o asterisk.tar.gz http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz \
-    && tar xzf asterisk.tar.gz
-RUN cd /tmp/asterisk* \
+RUN cd /tmp \
+    && curl https://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz | tar xz \
+    && cd asterisk-${ASTERISK_VERSION} \
     && ./configure --with-pjproject-bundled --with-crypto --with-ssl \
+    && make menuselect.makeopts \
+    && menuselect/menuselect --enable codec_opus --enable format_mp3 \
+    && contrib/scripts/get_mp3_source.sh \
     && make \
     && make install \
     && make samples \
-    && make config
+    && make config \
+    && cd /
+    && rm -rf /tmp/asterisk-${ASTERISK_VERSION}
 
 CMD asterisk -fvvv
